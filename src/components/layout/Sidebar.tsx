@@ -11,15 +11,15 @@ export default function Sidebar() {
           Dashboard
         </Link>
 
-        <Link className="rounded-lg px-4 py-2 hover:bg-zinc-800" href="/clients">
+        <Link className="rounded-lg px-4 py-2 hover:bg-zinc-800" href="/dashboard/clients">
           Clients
         </Link>
 
-        <Link className="rounded-lg px-4 py-2 hover:bg-zinc-800" href="#">
+        <Link className="rounded-lg px-4 py-2 hover:bg-zinc-800" href="/dashboard/products">
           Products
         </Link>
 
-        <Link className="rounded-lg px-4 py-2 hover:bg-zinc-800" href="#">
+        <Link className="rounded-lg px-4 py-2 hover:bg-zinc-800" href="/dashboard/settings">
           Settings
         </Link>
       </nav>
