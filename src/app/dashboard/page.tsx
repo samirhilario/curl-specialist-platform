@@ -4,10 +4,10 @@ import Topbar from "@/components/layout/Topbar"
 export default function DashboardPage() {
   return (
     <main className="flex min-h-screen">
-      <Sidebar />
+      {/* <Sidebar /> */}
 
       <section className="flex-1 bg-zinc-100">
-        <Topbar />
+        {/* <Topbar /> */}
 
         <div className="p-8">
           <h1 className="text-3xl font-bold">Dashboard</h1>
