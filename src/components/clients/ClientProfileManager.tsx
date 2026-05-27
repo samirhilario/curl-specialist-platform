@@ -47,16 +47,16 @@ export default function ClientProfileManager(
     <>
       <Link
         href="/dashboard/clients"
-        className="mb-4 inline-flex text-sm font-medium text-zinc-600 hover:text-zinc-950"
+        className="mb-4 inline-flex text-sm font-medium text-zinc-900 hover:text-zinc-950"
       >
         ← Back to Clients
       </Link>
-      
+
       <h1 className="text-3xl font-bold">
         {props.client.name}
       </h1>
 
-      <p className="mt-2 text-zinc-600">
+      <p className="mt-2 text-zinc-900">
         {props.client.phone}
       </p>
 
@@ -165,7 +165,7 @@ export default function ClientProfileManager(
 
           <div className="mt-6 flex flex-wrap gap-2">
             {products.length === 0 ? (
-              <p className="text-sm text-zinc-500">
+              <p className="text-sm text-zinc-900">
                 No products added yet.
               </p>
             ) : (
@@ -180,7 +180,7 @@ export default function ClientProfileManager(
                     onClick={() =>
                       handleRemoveProduct(product)
                     }
-                    className="text-xs text-zinc-300 hover:text-white"
+                    className="text-xs text-zinc-900 hover:text-white"
                   >
                     ✕
                   </button>

@@ -15,21 +15,21 @@ export default function ClientCard({ client }: ClientCardProps) {
                 <div className="flex items-start justify=between">
                     <div>
                         <h2 className="text=xl font=smibold">{client.name}</h2>
-                        <p className="mt-1 text-sm text-zinc-500">{client.phone}</p>
+                        <p className="mt-1 text-sm text-zinc-700">{client.phone}</p>
                     </div>
 
-                    <span className="rounded-full bg-zinc-100 px-3 py-1 text-sm font-medium text-zinc-700">
+                    <span className="rounded-full bg-zinc-100 px-3 py-1 text-sm font-medium text-zinc-900">
                         {client.curlType}
                     </span>
                 </div>
 
                 <div className="mt-4">
-                    <p className="text=sm font-medium text-zinc-700">Porosity</p>
-                    <p className="text-sm text-zinc-600">{client.porosity}</p>
+                    <p className="text=sm font-medium text-zinc-900">Porosity</p>
+                    <p className="text-sm text-zinc-800">{client.porosity}</p>
                 </div>
 
                 <div className="mt-4">
-                    <p className="text-sm font-medium text-zinc-700">Products Used</p>
+                    <p className="text-sm font-medium text-zinc-900">Products Used</p>
                     
                     <div className="mt-2 flex flex-wrap gap-2">
                         {client.productsUsed.map((product) => (
@@ -41,8 +41,8 @@ export default function ClientCard({ client }: ClientCardProps) {
                 </div>
 
                 <div className="mt-4">
-                    <p className="text-sm font-medium text-zinc-700">Notes</p>
-                    <p className="mt-1 text-sm text-zinc-600">{client.notes}</p>
+                    <p className="text-sm font-medium text-zinc-900">Notes</p>
+                    <p className="mt-1 text-sm text-zinc-800">{client.notes}</p>
                 </div>
             </div>
         </Link>
