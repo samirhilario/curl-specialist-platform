@@ -2,6 +2,7 @@
 
 import { useState } from "react"
 import type { Client } from "@/types/client"
+import Link from "next/link"
 
 type ClientProfileManagerProps = {
   client: Client
@@ -44,6 +45,13 @@ export default function ClientProfileManager(
 
   return (
     <>
+      <Link
+        href="/dashboard/clients"
+        className="mb-4 inline-flex text-sm font-medium text-zinc-600 hover:text-zinc-950"
+      >
+        ← Back to Clients
+      </Link>
+      
       <h1 className="text-3xl font-bold">
         {props.client.name}
       </h1>

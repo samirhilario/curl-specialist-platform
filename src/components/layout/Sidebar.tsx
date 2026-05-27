@@ -2,7 +2,7 @@ import Link from "next/link"
 
 export default function Sidebar() {
   return (
-    <aside className="min-h-screen w-64 bg-zinc-950 p-6 text-white">
+    <aside className="w-full md:min-h-screen md:w-64 bg-zinc-950 p-6 text-white">
       <h1 className="text-xl font-bold">Curl Specialist</h1>
       <p className="mt-1 text-sm text-zinc-400">Client Tracker</p>
 

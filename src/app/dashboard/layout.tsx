@@ -7,7 +7,7 @@ type DashboardLayoutProps = {
 
 export default function DashboardLayout(props: DashboardLayoutProps) {
   return (
-    <main className="flex min-h-screen">
+    <main className="flex min-h-screen flex-col md:flex-row">
       <Sidebar />
 
       <section className="flex-1 bg-zinc-100">
