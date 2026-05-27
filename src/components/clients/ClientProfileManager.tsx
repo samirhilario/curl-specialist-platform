@@ -16,6 +16,14 @@ export default function ClientProfileManager(
 
   const [newProduct, setNewProduct] = useState("")
 
+  function handleRemoveProduct(productToRemove: string) {
+    const updatedProducts = products.filter(
+      (product) => product !== productToRemove
+    )
+
+    setProducts(updatedProducts)
+  }
+
   function handleAddProduct() {
     if (!newProduct.trim()) return
 
@@ -81,14 +89,36 @@ export default function ClientProfileManager(
         </div>
 
         <div className="mt-6 flex flex-wrap gap-2">
-          {products.map((product) => (
+          {/* {products.map((product) => (
             <span
               key={product}
               className="rounded-full bg-zinc-950 px-3 py-1 text-sm text-white"
             >
               {product}
             </span>
-          ))}
+          ))} */}
+
+          {products.length === 0 ? (
+            <p className="text-sm text-zinc-500">
+              No products added yet.
+            </p>
+          ) : (
+            products.map((product) => (
+              <div
+                key={product}
+                className="flex items-centerr gap-2 rounded-full bg-zinc-950 px-3 py-1 text-sm text-white"
+                >
+                  <span>{product}</span>
+
+                  <button
+                    onClick={() => handleRemoveProduct(product)}
+                    className="text-xs text-zinc-300 hover:text-white"
+                    >
+                      X
+                    </button>
+                    </div>
+            ))
+          )}
         </div>
       </div>
     </>
