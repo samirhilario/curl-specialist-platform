@@ -53,7 +53,7 @@ export default function AddClientForm(
       onSubmit={handleSubmit}
       className="mb-6 rounded-xl bg-white p-6 shadow"
     >
-      <h2 className="text-xl font-semibold">
+      <h2 className="text-xl font-semibold text-zinc-700">
         Add New Client
       </h2>
 
@@ -97,7 +97,7 @@ export default function AddClientForm(
 
       <div className="mt-4 grid gap-4 md:grid-cols-2">
         <div>
-          <label className="text-sm font-medium">
+          <label className="text-sm font-medium text-zinc-500">
             Client Name
           </label>
 
@@ -112,7 +112,7 @@ export default function AddClientForm(
         </div>
 
         <div>
-          <label className="text-sm font-medium">
+          <label className="text-sm font-medium text-zinc-500">
             Phone
           </label>
 
@@ -127,7 +127,7 @@ export default function AddClientForm(
         </div>
 
         <div>
-          <label className="text-sm font-medium">
+          <label className="text-sm font-medium text-zinc-500">
             Curl Type
           </label>
 
@@ -142,7 +142,7 @@ export default function AddClientForm(
         </div>
 
         <div>
-          <label className="text-sm font-medium">
+          <label className="text-sm font-medium text-zinc-500">
             Porosity
           </label>
 
@@ -158,7 +158,7 @@ export default function AddClientForm(
       </div>
 
       <div className="mt-4">
-        <label className="text-sm font-medium">
+        <label className="text-sm font-medium text-zinc-500">
           Notes
         </label>
 

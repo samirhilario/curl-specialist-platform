@@ -14,8 +14,8 @@ export default function ClientCard({ client }: ClientCardProps) {
             <div className="rounded-xl border bg-white p-6 shadow-sm">
                 <div className="flex items-start justify=between">
                     <div>
-                        <h2 className="text=xl font=smibold">{client.name}</h2>
-                        <p className="mt-1 text-sm text-zinc-700">{client.phone}</p>
+                        <h2 className="text=xl font=smibold text-zinc-950">{client.name}</h2>
+                        <p className="mt-1 text-sm text-zinc-900">{client.phone}</p>
                     </div>
 
                     <span className="rounded-full bg-zinc-100 px-3 py-1 text-sm font-medium text-zinc-900">
@@ -25,7 +25,7 @@ export default function ClientCard({ client }: ClientCardProps) {
 
                 <div className="mt-4">
                     <p className="text=sm font-medium text-zinc-900">Porosity</p>
-                    <p className="text-sm text-zinc-800">{client.porosity}</p>
+                    <p className="text-sm text-zinc-900">{client.porosity}</p>
                 </div>
 
                 <div className="mt-4">
@@ -42,7 +42,7 @@ export default function ClientCard({ client }: ClientCardProps) {
 
                 <div className="mt-4">
                     <p className="text-sm font-medium text-zinc-900">Notes</p>
-                    <p className="mt-1 text-sm text-zinc-800">{client.notes}</p>
+                    <p className="mt-1 text-sm text-zinc-900">{client.notes}</p>
                 </div>
             </div>
         </Link>

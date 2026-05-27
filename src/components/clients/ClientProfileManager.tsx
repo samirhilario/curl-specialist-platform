@@ -52,7 +52,7 @@ export default function ClientProfileManager(
         ← Back to Clients
       </Link>
 
-      <h1 className="text-3xl font-bold">
+      <h1 className="text-3xl font-bold text-zinc-950">
         {props.client.name}
       </h1>
 
@@ -103,13 +103,13 @@ export default function ClientProfileManager(
 
       <div className="mt-8 grid gap-6 lg:grid-cols-2">
         <div className="rounded-xl bg-white p-6 shadow">
-          <h2 className="text-xl font-semibold">
+          <h2 className="text-xl font-semibold text-zinc-700">
             Hair Profile
           </h2>
 
           <div className="mt-4 grid gap-4 md:grid-cols-2">
             <div>
-              <label className="text-sm font-medium">
+              <label className="text-sm font-medium text-zinc-500">
                 Curl Type
               </label>
 
@@ -124,7 +124,7 @@ export default function ClientProfileManager(
             </div>
 
             <div>
-              <label className="text-sm font-medium">
+              <label className="text-sm font-medium text-zinc-500">
                 Porosity
               </label>
 
@@ -141,7 +141,7 @@ export default function ClientProfileManager(
         </div>
 
         <div className="rounded-xl bg-white p-6 shadow">
-          <h2 className="text-xl font-semibold">
+          <h2 className="text-xl font-semibold text-zinc-700">
             Products Used
           </h2>
 
@@ -192,7 +192,7 @@ export default function ClientProfileManager(
       </div>
 
       <div className="mt-6 rounded-xl bg-white p-6 shadow">
-        <h2 className="text-xl font-semibold">
+        <h2 className="text-xl font-semibold text-zinc-700">
           Client Notes
         </h2>
 

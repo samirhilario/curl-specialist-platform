@@ -14,7 +14,7 @@ export default async function ClientDetailsPage(props: ClientDetailsPageProps) {
 
   if(!client) {
     return (
-      <h1 className="text-3xl font-bold">
+      <h1 className="text-3xl font-bold text-zinc-500">
         Client not found
       </h1>
     )

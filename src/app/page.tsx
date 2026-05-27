@@ -4,8 +4,8 @@ export default function HomePage() {
   return (
     <main className="flex min-h-screen items-center justify-center bg-zinc-100">
       <div className="rounded-xl bg-white p-8 shadow">
-        <h1 className="text-3xl font-bold">Curl Specialist Platform</h1>
-        <p className="mt-2 text-zinc-800">
+        <h1 className="text-3xl font-bold text-zinc-950">Curl Specialist Platform</h1>
+        <p className="mt-2 text-zinc-900">
           Phase 1: Client and product tracking.
         </p>
 
