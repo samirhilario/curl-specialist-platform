@@ -15,6 +15,9 @@ export default function ClientProfileManager(
   )
 
   const [newProduct, setNewProduct] = useState("")
+  const [notes, setNotes] = useState(props.client.notes)
+  const [curlType, setCurlType] = useState(props.client.curlType)
+  const [porosity, setPorosity] = useState(props.client.porosity)
 
   function handleRemoveProduct(productToRemove: string) {
     const updatedProducts = products.filter(
@@ -47,7 +50,7 @@ export default function ClientProfileManager(
           Hair Profile
         </h2>
 
-        <p className="mt-4">
+        {/*<p className="mt-4">
           <strong>Curl Type:</strong>{" "}
           {props.client.curlType}
         </p>
@@ -60,7 +63,52 @@ export default function ClientProfileManager(
         <p className="mt-2">
           <strong>Notes:</strong>{" "}
           {props.client.notes}
-        </p>
+        </p> */}
+
+        <div className="mt-4 grid gap-4 md:grid-cols-2">
+          <div>
+            <label className="text-sm font-medium">
+              Curl Type
+            </label>
+
+            <input
+              value={curlType}
+              onChange={(event) =>
+                setCurlType(event.target.value)
+              }
+              className="mt-2 w-full rounded-lg border p-3"
+              placeholder="3A, 3B, 4A..."
+            />
+          </div>
+
+          <div>
+            <label className="text-sm font-medium">
+              Porosity
+            </label>
+
+            <input
+              value={porosity}
+              onChange={(event) =>
+                setPorosity(event.target.value)
+              }
+              className="mt-2 w-full rounded-lg border p-3"
+              placeholder="Low, Medium, High"
+            />
+          </div>
+        </div>
+
+        <div className="mt-4">
+          <label className="text-smj font-medium">
+            Notes
+          </label>
+
+          <textarea
+            value={notes}
+            onChange={(event) => setNotes(event.target.value)}
+            className="mt-2 min-h-32 w-full rounded-lg border p-3"
+            placeholder="Add client notes..."
+          />
+        </div>
       </div>
 
       <div className="mt-6 rounded-xl bg-white p-6 shadow">

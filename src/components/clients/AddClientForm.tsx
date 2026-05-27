@@ -13,9 +13,17 @@ export default function AddClientForm(props: AddClientFormProps) {
   const [curlType, setCurlType] = useState("")
   const [porosity, setPorosity] = useState("")
   const [notes, setNotes] = useState("")
+  const [error, setError] = useState("")
 
   function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault()
+
+    if(!name.trim()) {
+      setError("Client name is required.")
+      return
+    }
+
+    setError("")
 
     const newClient: Client = {
       id: crypto.randomUUID(),
@@ -39,6 +47,16 @@ export default function AddClientForm(props: AddClientFormProps) {
   return (
     <form onSubmit={handleSubmit} className="mb-6 rounded-xl bg-white p-6 shadow">
       <h2 className="text-xl font-semibold">Add New Client</h2>
+
+      <h2 className="text-xl font-semibold">
+        Add New Client
+      </h2>
+
+      {error && (
+        <p className="mt-2 text-sm text-red-600">
+          {error}
+        </p>
+      )}
 
       <div className="mt-4 grid gap-4 md:grid-cols-2">
         <input className="rounded-lg border p-3" placeholder="Client name" value={name} onChange={(e) => setName(e.target.value)} />
