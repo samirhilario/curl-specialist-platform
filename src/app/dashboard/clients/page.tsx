@@ -1,7 +1,21 @@
 import ClientManager from "@/components/clients/ClientManager"
-import { clients } from "@/data/clients"
+// import { clients } from "@/data/clients"
+import { supabase } from "@/lib/supabase"
 
-export default function ClientsPage() {
+export default async function ClientsPage() {
+  const {data: clients, error } = await supabase
+    .from("clients")
+    .select("*")
+    .order("created_at", { ascending: false })
+  
+  if(error) {
+    return(
+      <h1 className="text-3xl font-bold text-zinc-950">
+        Error loading clients.
+      </h1>
+    )
+  }
+
   return (
     <>
       <div className="mb-6">
@@ -11,7 +25,11 @@ export default function ClientsPage() {
         </p>
       </div>
 
-      <ClientManager initialClients={clients} />
+      {
+      // <ClientManager initialClients={clients} />
+      }
+
+      <ClientManager initialClients={clients ?? []} />
     </>
   )
 }
