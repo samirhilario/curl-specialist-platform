@@ -9,21 +9,30 @@ type ClientManagerProps = {
   initialClients: Client[]
 }
 
-export default function ClientManager(props: ClientManagerProps) {
-  const [clients, setClients] = useState(props.initialClients)
+export default function ClientManager({
+  initialClients,
+}: ClientManagerProps) {
+  const [clients, setClients] = useState(initialClients)
   const [searchTerm, setSearchTerm] = useState("")
 
-  function handleAddClient(newClient: Client) {
-    setClients([...clients, newClient])
+  function handleAddClient(client: Client) {
+    setClients((currentClients) => [
+      client,
+      ...currentClients,
+    ])
   }
 
+  const search = searchTerm.trim().toLowerCase()
+
   const filteredClients = clients.filter((client) => {
-    const search = searchTerm.toLowerCase()
+    const name = client.name.toLowerCase()
+    const phone = client.phone?.toLowerCase() ?? ""
+    const curlType = client.curl_type?.toLowerCase() ?? ""
 
     return (
-      client.name.toLowerCase().includes(search) ||
-      client.phone.toLowerCase().includes(search) ||
-      client.curlType.toLowerCase().includes(search)
+      name.includes(search) ||
+      phone.includes(search) ||
+      curlType.includes(search)
     )
   })
 
@@ -31,12 +40,23 @@ export default function ClientManager(props: ClientManagerProps) {
     <>
       <AddClientForm onAddClient={handleAddClient} />
 
-      <div className="mb-6 rounded-xl bg-white p-4 shadow">
+      <div className="mb-6">
+        <label
+          htmlFor="client-search"
+          className="text-sm font-medium text-zinc-700"
+        >
+          Search Clients
+        </label>
+
         <input
+          id="client-search"
+          type="search"
+          className="mt-2 w-full rounded-lg border p-3"
+          placeholder="Search by name, phone, or curl type..."
           value={searchTerm}
-          onChange={(event) => setSearchTerm(event.target.value)}
-          placeholder="Search clients by name, phone, or curl type..."
-          className="w-full rounded-lg border p-3"
+          onChange={(event) =>
+            setSearchTerm(event.target.value)
+          }
         />
       </div>
 
