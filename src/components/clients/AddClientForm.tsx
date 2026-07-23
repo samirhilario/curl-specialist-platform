@@ -8,83 +8,70 @@ type AddClientFormProps = {
   onAddClient: (client: Client) => void
 }
 
-export default function AddClientForm(
-  props: AddClientFormProps
-) {
+export default function AddClientForm({
+  onAddClient,
+}: AddClientFormProps) {
   const [name, setName] = useState("")
   const [phone, setPhone] = useState("")
   const [curlType, setCurlType] = useState("")
   const [porosity, setPorosity] = useState("")
   const [notes, setNotes] = useState("")
-  const [error, setError] = useState("")
 
-  /*function handleSubmit(
+  const [error, setError] = useState("")
+  const [successMessage, setSuccessMessage] = useState("")
+  const [isCreating, setIsCreating] = useState(false)
+
+  async function handleSubmit(
     event: React.FormEvent<HTMLFormElement>
   ) {
     event.preventDefault()
 
-    if (!name.trim()) {
-      setError("Client name is required.")
+    // Prevent another submission while one is already running.
+    if (isCreating) {
       return
     }
 
-    setError("")
-
-    const newClient: Client = {
-      id: crypto.randomUUID(),
-      name,
-      phone,
-      curlType,
-      porosity,
-      notes,
-      productsUsed: [],
+    if (!name.trim()) {
+      setError("Client name is required.")
+      setSuccessMessage("")
+      return
     }
 
-    props.onAddClient(newClient)
+    // Clear old messages before starting a new request.
+    setError("")
+    setSuccessMessage("")
+    setIsCreating(true)
+
+    const { data, error: createError } = await supabase
+      .from("clients")
+      .insert({
+        name: name.trim(),
+        phone: phone.trim(),
+        curl_type: curlType.trim(),
+        porosity: porosity.trim(),
+        notes: notes.trim(),
+      })
+      .select()
+      .single()
+
+    if (createError) {
+      console.error(createError)
+      setError("Failed to create client. Please try again.")
+      setIsCreating(false)
+      return
+    }
+
+    onAddClient(data)
 
     setName("")
     setPhone("")
     setCurlType("")
     setPorosity("")
     setNotes("")
-  } */
 
-    async function handleSubmit(
-      event: React.FormEvent<HTMLFormElement>
-    ) {
-      event.preventDefault()
-
-      if (!name.trim()) {
-        setError("Client name is required.")
-          return
-      }
-
-      const { data, error } = await supabase
-        .from("clients")
-        .insert({
-          name,
-          phone,
-          curl_type: curlType,
-          porosity,
-          notes,
-        })
-        .select()
-        .single()
-
-        if (error) {
-          console.log(error)
-          setError("Failed to create client.")
-          return
-        }
-
-        props.onAddClient(data)
-
-        setName("")
-        setPhone("")
-        setCurlType("")
-        setPorosity("")
-        setNotes("")
-    }
+    setSuccessMessage(`${data.name} was added successfully.`)
+    setIsCreating(false)
+  }
 
   return (
     <form
@@ -96,123 +83,141 @@ export default function AddClientForm(
       </h2>
 
       {error && (
-        <p className="mt-2 text-sm text-red-600">
+        <p
+          role="alert"
+          className="mt-3 rounded-lg bg-red-50 px-4 py-3 text-sm text-red-700"
+        >
           {error}
         </p>
       )}
 
-      {/*
-      <div className="mt-4 grid gap-4 md:grid-cols-2">
-        <input
-          className="rounded-lg border p-3"
-          placeholder="Client name"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-        />
-
-        <input
-          className="rounded-lg border p-3"
-          placeholder="Phone"
-          value={phone}
-          onChange={(e) => setPhone(e.target.value)}
-        />
-
-        <input
-          className="rounded-lg border p-3"
-          placeholder="Curl type"
-          value={curlType}
-          onChange={(e) => setCurlType(e.target.value)}
-        />
-
-        <input
-          className="rounded-lg border p-3"
-          placeholder="Porosity"
-          value={porosity}
-          onChange={(e) => setPorosity(e.target.value)}
-        />
-      </div>
-      */}
+      {successMessage && (
+        <p
+          role="status"
+          className="mt-3 rounded-lg bg-green-50 px-4 py-3 text-sm text-green-700"
+        >
+          {successMessage}
+        </p>
+      )}
 
       <div className="mt-4 grid gap-4 md:grid-cols-2">
         <div>
-          <label className="text-sm font-medium text-zinc-500">
+          <label
+            htmlFor="client-name"
+            className="text-sm font-medium text-zinc-500"
+          >
             Client Name
           </label>
 
           <input
-            className="mt-2 w-full rounded-lg border p-3"
+            id="client-name"
+            name="clientName"
+            type="text"
+            className="mt-2 w-full rounded-lg border p-3 disabled:cursor-not-allowed disabled:bg-zinc-100"
             placeholder="Maria Johnson"
             value={name}
-            onChange={(event) =>
+            disabled={isCreating}
+            onChange={(event) => {
               setName(event.target.value)
-            }
+
+              if (error) {
+                setError("")
+              }
+
+              if (successMessage) {
+                setSuccessMessage("")
+              }
+            }}
           />
         </div>
 
         <div>
-          <label className="text-sm font-medium text-zinc-500">
+          <label
+            htmlFor="client-phone"
+            className="text-sm font-medium text-zinc-500"
+          >
             Phone
           </label>
 
           <input
-            className="mt-2 w-full rounded-lg border p-3"
+            id="client-phone"
+            name="phone"
+            type="tel"
+            className="mt-2 w-full rounded-lg border p-3 disabled:cursor-not-allowed disabled:bg-zinc-100"
             placeholder="803-555-0142"
             value={phone}
-            onChange={(event) =>
-              setPhone(event.target.value)
-            }
+            disabled={isCreating}
+            onChange={(event) => setPhone(event.target.value)}
           />
         </div>
 
         <div>
-          <label className="text-sm font-medium text-zinc-500">
+          <label
+            htmlFor="curl-type"
+            className="text-sm font-medium text-zinc-500"
+          >
             Curl Type
           </label>
 
           <input
-            className="mt-2 w-full rounded-lg border p-3"
+            id="curl-type"
+            name="curlType"
+            type="text"
+            className="mt-2 w-full rounded-lg border p-3 disabled:cursor-not-allowed disabled:bg-zinc-100"
             placeholder="3A, 3B, 4C..."
             value={curlType}
-            onChange={(event) =>
-              setCurlType(event.target.value)
-            }
+            disabled={isCreating}
+            onChange={(event) => setCurlType(event.target.value)}
           />
         </div>
 
         <div>
-          <label className="text-sm font-medium text-zinc-500">
+          <label
+            htmlFor="porosity"
+            className="text-sm font-medium text-zinc-500"
+          >
             Porosity
           </label>
 
           <input
-            className="mt-2 w-full rounded-lg border p-3"
+            id="porosity"
+            name="porosity"
+            type="text"
+            className="mt-2 w-full rounded-lg border p-3 disabled:cursor-not-allowed disabled:bg-zinc-100"
             placeholder="Low, Medium, High"
             value={porosity}
-            onChange={(event) =>
-              setPorosity(event.target.value)
-            }
+            disabled={isCreating}
+            onChange={(event) => setPorosity(event.target.value)}
           />
         </div>
       </div>
 
       <div className="mt-4">
-        <label className="text-sm font-medium text-zinc-500">
+        <label
+          htmlFor="client-notes"
+          className="text-sm font-medium text-zinc-500"
+        >
           Notes
         </label>
 
         <textarea
-          className="mt-2 min-h-32 w-full rounded-lg border p-3"
+          id="client-notes"
+          name="notes"
+          className="mt-2 min-h-32 w-full rounded-lg border p-3 disabled:cursor-not-allowed disabled:bg-zinc-100"
           placeholder="Add client notes..."
           value={notes}
-          onChange={(event) =>
-            setNotes(event.target.value)
-          }
+          disabled={isCreating}
+          onChange={(event) => setNotes(event.target.value)}
         />
       </div>
 
       <div className="mt-4 flex justify-end">
-        <button className="rounded-lg bg-zinc-950 px-4 py-2 text-white hover:bg-zinc-800">
-          Save Client
+        <button
+          type="submit"
+          disabled={isCreating}
+          className="rounded-lg bg-zinc-950 px-4 py-2 text-white hover:bg-zinc-800 disabled:cursor-not-allowed disabled:bg-zinc-400"
+        >
+          {isCreating ? "Creating..." : "Save Client"}
         </button>
       </div>
     </form>

@@ -2,6 +2,7 @@
 
 import { useState } from "react"
 import Link from "next/link"
+import { useRouter } from "next/navigation"
 import type { Client } from "@/types/client"
 import { supabase } from "@/lib/supabase"
 
@@ -19,6 +20,8 @@ export default function ClientProfileManager({
   initialClient,
   initialProducts,
 }: ClientProfileManagerProps) {
+  const router = useRouter()
+
   const [products, setProducts] =
     useState<ClientProduct[]>(initialProducts)
 
@@ -40,6 +43,9 @@ export default function ClientProfileManager({
 
   const [isSaving, setIsSaving] = useState(false)
   const [saveMessage, setSaveMessage] = useState("")
+
+  const [isDeleting, setIsDeleting] = useState(false)
+  const [deleteMessage, setDeleteMessage] = useState("")
 
   async function handleSaveClient() {
     setIsSaving(true)
@@ -119,6 +125,34 @@ export default function ClientProfileManager({
 
     setProducts(updatedProducts)
     setProductMessage("Product removed.")
+  }
+
+  async function handleDeleteClient() {
+    const confirmed = window.confirm(
+      `Are you sure you want to delete ${initialClient.name}? This cannot be undone.`
+    )
+
+    if (!confirmed) {
+      return
+    }
+
+    setIsDeleting(true)
+    setDeleteMessage("")
+
+    const { error } = await supabase
+      .from("clients")
+      .delete()
+      .eq("id", initialClient.id)
+
+    if (error) {
+      console.error(error)
+      setDeleteMessage("Failed to delete client.")
+      setIsDeleting(false)
+      return
+    }
+
+    router.push("/dashboard/clients")
+    router.refresh()
   }
 
   return (
@@ -268,6 +302,32 @@ export default function ClientProfileManager({
             </p>
           )}
         </div>
+      </div>
+
+      <div className="mt-6 rounded-xl border border-red-200 bg-red-50 p-6">
+        <h2 className="text-xl font-semibold text-red-900">
+          Delete Client
+        </h2>
+
+        <p className="mt-2 text-sm text-red-800">
+          Permanently delete this client and all of their
+          products. This action cannot be undone.
+        </p>
+
+        <button
+          type="button"
+          onClick={handleDeleteClient}
+          disabled={isDeleting}
+          className="mt-4 rounded-lg bg-red-700 px-4 py-2 font-medium text-white hover:bg-red-800 disabled:cursor-not-allowed disabled:opacity-50"
+        >
+          {isDeleting ? "Deleting..." : "Delete Client"}
+        </button>
+
+        {deleteMessage && (
+          <p className="mt-3 text-sm text-red-800">
+            {deleteMessage}
+          </p>
+        )}
       </div>
     </>
   )

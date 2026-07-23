@@ -11,6 +11,7 @@ type ClientPageProps = {
 export default async function ClientPage({
   params,
 }: ClientPageProps) {
+  
   const { id } = await params
 
   const { data: client, error: clientError } = await supabase
