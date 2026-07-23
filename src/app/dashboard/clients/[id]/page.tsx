@@ -1,26 +1,43 @@
+import { notFound } from "next/navigation"
 import ClientProfileManager from "@/components/clients/ClientProfileManager"
-import { clients } from "@/data/clients"
+import { supabase } from "@/lib/supabase"
 
-type ClientDetailsPageProps = {
-  params: Promise<{ id: string }>
+type ClientPageProps = {
+  params: Promise<{
+    id: string
+  }>
 }
 
-export default async function ClientDetailsPage(props: ClientDetailsPageProps) {
-  const params = await props.params
+export default async function ClientPage({
+  params,
+}: ClientPageProps) {
+  const { id } = await params
 
-  const client = clients.find(
-    (client) => client.id === params.id
-  )
+  const { data: client, error: clientError } = await supabase
+    .from("clients")
+    .select("*")
+    .eq("id", id)
+    .single()
 
-  if(!client) {
-    return (
-      <h1 className="text-3xl font-bold text-zinc-500">
-        Client not found
-      </h1>
-    )
+  if (clientError || !client) {
+    notFound()
+  }
+
+  const { data: productRows, error: productsError } =
+    await supabase
+      .from("client_products")
+      .select("id, name")
+      .eq("client_id", id)
+      .order("created_at", { ascending: true })
+
+  if (productsError) {
+    console.error(productsError)
   }
 
   return (
-    <ClientProfileManager client={client} />
+    <ClientProfileManager
+      initialClient={client}
+      initialProducts={productRows ?? []}
+    />
   )
 }

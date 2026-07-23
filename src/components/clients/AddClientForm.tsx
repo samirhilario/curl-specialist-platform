@@ -2,6 +2,7 @@
 
 import { useState } from "react"
 import type { Client } from "@/types/client"
+import { supabase } from "@/lib/supabase"
 
 type AddClientFormProps = {
   onAddClient: (client: Client) => void
@@ -17,7 +18,7 @@ export default function AddClientForm(
   const [notes, setNotes] = useState("")
   const [error, setError] = useState("")
 
-  function handleSubmit(
+  /*function handleSubmit(
     event: React.FormEvent<HTMLFormElement>
   ) {
     event.preventDefault()
@@ -46,7 +47,44 @@ export default function AddClientForm(
     setCurlType("")
     setPorosity("")
     setNotes("")
-  }
+  } */
+
+    async function handleSubmit(
+      event: React.FormEvent<HTMLFormElement>
+    ) {
+      event.preventDefault()
+
+      if (!name.trim()) {
+        setError("Client name is required.")
+          return
+      }
+
+      const { data, error } = await supabase
+        .from("clients")
+        .insert({
+          name,
+          phone,
+          curl_type: curlType,
+          porosity,
+          notes,
+        })
+        .select()
+        .single()
+
+        if (error) {
+          console.log(error)
+          setError("Failed to create client.")
+          return
+        }
+
+        props.onAddClient(data)
+
+        setName("")
+        setPhone("")
+        setCurlType("")
+        setPorosity("")
+        setNotes("")
+    }
 
   return (
     <form

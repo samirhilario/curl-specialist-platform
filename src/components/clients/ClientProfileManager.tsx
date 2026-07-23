@@ -1,46 +1,124 @@
 "use client"
 
 import { useState } from "react"
-import type { Client } from "@/types/client"
 import Link from "next/link"
+import type { Client } from "@/types/client"
+import { supabase } from "@/lib/supabase"
 
-type ClientProfileManagerProps = {
-  client: Client
+type ClientProduct = {
+  id: string
+  name: string
 }
 
-export default function ClientProfileManager(
-  props: ClientProfileManagerProps
-) {
-  const [products, setProducts] = useState(
-    props.client.productsUsed
-  )
+type ClientProfileManagerProps = {
+  initialClient: Client
+  initialProducts: ClientProduct[]
+}
+
+export default function ClientProfileManager({
+  initialClient,
+  initialProducts,
+}: ClientProfileManagerProps) {
+  const [products, setProducts] =
+    useState<ClientProduct[]>(initialProducts)
 
   const [newProduct, setNewProduct] = useState("")
+  const [productMessage, setProductMessage] = useState("")
+  const [isAddingProduct, setIsAddingProduct] = useState(false)
 
-  const [notes, setNotes] = useState(props.client.notes)
+  const [notes, setNotes] = useState(
+    initialClient.notes ?? ""
+  )
 
   const [curlType, setCurlType] = useState(
-    props.client.curlType
+    initialClient.curl_type ?? ""
   )
 
   const [porosity, setPorosity] = useState(
-    props.client.porosity
+    initialClient.porosity ?? ""
   )
 
-  function handleRemoveProduct(productToRemove: string) {
+  const [isSaving, setIsSaving] = useState(false)
+  const [saveMessage, setSaveMessage] = useState("")
+
+  async function handleSaveClient() {
+    setIsSaving(true)
+    setSaveMessage("")
+
+    const { error } = await supabase
+      .from("clients")
+      .update({
+        curl_type: curlType.trim() || null,
+        porosity: porosity.trim() || null,
+        notes: notes.trim() || null,
+      })
+      .eq("id", initialClient.id)
+
+    if (error) {
+      console.error(error)
+      setSaveMessage("Failed to save changes.")
+      setIsSaving(false)
+      return
+    }
+
+    setSaveMessage("Changes saved.")
+    setIsSaving(false)
+  }
+
+  async function handleAddProduct() {
+    const trimmedProduct = newProduct.trim()
+
+    if (!trimmedProduct) {
+      return
+    }
+
+    setIsAddingProduct(true)
+    setProductMessage("")
+
+    const { data: product, error } = await supabase
+      .from("client_products")
+      .insert({
+        client_id: initialClient.id,
+        name: trimmedProduct,
+      })
+      .select("id, name")
+      .single()
+
+    if (error) {
+      console.error(error)
+      setProductMessage("Failed to add product.")
+      setIsAddingProduct(false)
+      return
+    }
+
+    setProducts([...products, product])
+    setNewProduct("")
+    setProductMessage("Product added.")
+    setIsAddingProduct(false)
+  }
+
+  async function handleRemoveProduct(
+    productToRemove: ClientProduct
+  ) {
+    setProductMessage("")
+
+    const { error } = await supabase
+      .from("client_products")
+      .delete()
+      .eq("id", productToRemove.id)
+
+    if (error) {
+      console.error(error)
+      setProductMessage("Failed to remove product.")
+      return
+    }
+
     const updatedProducts = products.filter(
-      (product) => product !== productToRemove
+      (product) => product.id !== productToRemove.id
     )
 
     setProducts(updatedProducts)
-  }
-
-  function handleAddProduct() {
-    if (!newProduct.trim()) return
-
-    setProducts([...products, newProduct])
-
-    setNewProduct("")
+    setProductMessage("Product removed.")
   }
 
   return (
@@ -53,63 +131,22 @@ export default function ClientProfileManager(
       </Link>
 
       <h1 className="text-3xl font-bold text-zinc-950">
-        {props.client.name}
+        {initialClient.name}
       </h1>
 
       <p className="mt-2 text-zinc-900">
-        {props.client.phone}
+        {initialClient.phone || "No phone number provided"}
       </p>
-
-      {/* 
-      <div className="mt-8 rounded-xl bg-white p-6 shadow">
-        <h2 className="text-xl font-semibold">
-          Hair Profile
-        </h2>
-
-        <p className="mt-4">
-          <strong>Curl Type:</strong>{" "}
-          {props.client.curlType}
-        </p>
-
-        <p className="mt-2">
-          <strong>Porosity:</strong>{" "}
-          {props.client.porosity}
-        </p>
-
-        <p className="mt-2">
-          <strong>Notes:</strong>{" "}
-          {props.client.notes}
-        </p>
-      </div>
-
-      <div className="mt-6 rounded-xl bg-white p-6 shadow">
-        <h2 className="text-xl font-semibold">
-          Products Used
-        </h2>
-
-        <div className="mt-4 flex flex-wrap gap-2">
-          {products.map((product) => (
-            <span
-              key={product}
-              className="rounded-full bg-zinc-950 px-3 py-1 text-sm text-white"
-            >
-              {product}
-            </span>
-          ))}
-        </div>
-      </div>
-
-      */}
 
       <div className="mt-8 grid gap-6 lg:grid-cols-2">
         <div className="rounded-xl bg-white p-6 shadow">
-          <h2 className="text-xl font-semibold text-zinc-700">
+          <h2 className="text-xl font-semibold text-zinc-900">
             Hair Profile
           </h2>
 
           <div className="mt-4 grid gap-4 md:grid-cols-2">
             <div>
-              <label className="text-sm font-medium text-zinc-500">
+              <label className="text-sm font-medium text-zinc-900">
                 Curl Type
               </label>
 
@@ -124,7 +161,7 @@ export default function ClientProfileManager(
             </div>
 
             <div>
-              <label className="text-sm font-medium text-zinc-500">
+              <label className="text-sm font-medium text-zinc-900">
                 Porosity
               </label>
 
@@ -141,7 +178,7 @@ export default function ClientProfileManager(
         </div>
 
         <div className="rounded-xl bg-white p-6 shadow">
-          <h2 className="text-xl font-semibold text-zinc-700">
+          <h2 className="text-xl font-semibold text-zinc-900">
             Products Used
           </h2>
 
@@ -156,12 +193,20 @@ export default function ClientProfileManager(
             />
 
             <button
+              type="button"
               onClick={handleAddProduct}
-              className="rounded-lg bg-zinc-950 px-4 py-2 text-white hover:bg-zinc-800"
+              disabled={isAddingProduct}
+              className="rounded-lg bg-zinc-950 px-4 py-2 text-white hover:bg-zinc-800 disabled:cursor-not-allowed disabled:opacity-50"
             >
-              Add
+              {isAddingProduct ? "Adding..." : "Add"}
             </button>
           </div>
+
+          {productMessage && (
+            <p className="mt-3 text-sm text-zinc-900">
+              {productMessage}
+            </p>
+          )}
 
           <div className="mt-6 flex flex-wrap gap-2">
             {products.length === 0 ? (
@@ -171,16 +216,18 @@ export default function ClientProfileManager(
             ) : (
               products.map((product) => (
                 <div
-                  key={product}
+                  key={product.id}
                   className="flex items-center gap-2 rounded-full bg-zinc-950 px-3 py-1 text-sm text-white"
                 >
-                  <span>{product}</span>
+                  <span>{product.name}</span>
 
                   <button
+                    type="button"
                     onClick={() =>
                       handleRemoveProduct(product)
                     }
-                    className="text-xs text-zinc-900 hover:text-white"
+                    className="text-xs text-zinc-300 hover:text-white"
+                    aria-label={`Remove ${product.name}`}
                   >
                     ✕
                   </button>
@@ -192,7 +239,7 @@ export default function ClientProfileManager(
       </div>
 
       <div className="mt-6 rounded-xl bg-white p-6 shadow">
-        <h2 className="text-xl font-semibold text-zinc-700">
+        <h2 className="text-xl font-semibold text-zinc-900">
           Client Notes
         </h2>
 
@@ -204,6 +251,23 @@ export default function ClientProfileManager(
           className="mt-4 min-h-32 w-full rounded-lg border p-3"
           placeholder="Add client notes..."
         />
+
+        <div className="mt-4 flex items-center gap-4">
+          <button
+            type="button"
+            onClick={handleSaveClient}
+            disabled={isSaving}
+            className="rounded-lg bg-zinc-950 px-4 py-2 text-white hover:bg-zinc-800 disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            {isSaving ? "Saving..." : "Save Changes"}
+          </button>
+
+          {saveMessage && (
+            <p className="text-sm text-zinc-900">
+              {saveMessage}
+            </p>
+          )}
+        </div>
       </div>
     </>
   )
