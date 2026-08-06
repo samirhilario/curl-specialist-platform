@@ -29,6 +29,10 @@ export default function ClientProfileManager({
   const [productMessage, setProductMessage] = useState("")
   const [isAddingProduct, setIsAddingProduct] = useState(false)
 
+  const [phone, setPhone] = useState(
+    initialClient.phone ?? ""
+  )
+
   const [notes, setNotes] = useState(
     initialClient.notes ?? ""
   )
@@ -54,6 +58,7 @@ export default function ClientProfileManager({
     const { error } = await supabase
       .from("clients")
       .update({
+        phone: phone.trim() || null,
         curl_type: curlType.trim() || null,
         porosity: porosity.trim() || null,
         notes: notes.trim() || null,
@@ -97,7 +102,11 @@ export default function ClientProfileManager({
       return
     }
 
-    setProducts([...products, product])
+    setProducts((currentProducts) => [
+      ...currentProducts,
+      product,
+    ])
+
     setNewProduct("")
     setProductMessage("Product added.")
     setIsAddingProduct(false)
@@ -119,11 +128,12 @@ export default function ClientProfileManager({
       return
     }
 
-    const updatedProducts = products.filter(
-      (product) => product.id !== productToRemove.id
+    setProducts((currentProducts) =>
+      currentProducts.filter(
+        (product) => product.id !== productToRemove.id
+      )
     )
 
-    setProducts(updatedProducts)
     setProductMessage("Product removed.")
   }
 
@@ -168,9 +178,25 @@ export default function ClientProfileManager({
         {initialClient.name}
       </h1>
 
-      <p className="mt-2 text-zinc-900">
-        {initialClient.phone || "No phone number provided"}
-      </p>
+      <div className="mt-4 max-w-md">
+        <label
+          htmlFor="client-phone"
+          className="text-sm font-medium text-zinc-900"
+        >
+          Phone Number
+        </label>
+
+        <input
+          id="client-phone"
+          type="tel"
+          value={phone}
+          onChange={(event) =>
+            setPhone(event.target.value)
+          }
+          className="mt-2 w-full rounded-lg border border-zinc-400 bg-white p-3 text-zinc-950 placeholder:text-zinc-600"
+          placeholder="803-555-0142"
+        />
+      </div>
 
       <div className="mt-8 grid gap-6 lg:grid-cols-2">
         <div className="rounded-xl bg-white p-6 shadow">
@@ -180,31 +206,41 @@ export default function ClientProfileManager({
 
           <div className="mt-4 grid gap-4 md:grid-cols-2">
             <div>
-              <label className="text-sm font-medium text-zinc-900">
+              <label
+                htmlFor="curl-type"
+                className="text-sm font-medium text-zinc-900"
+              >
                 Curl Type
               </label>
 
               <input
+                id="curl-type"
+                type="text"
                 value={curlType}
                 onChange={(event) =>
                   setCurlType(event.target.value)
                 }
-                className="mt-2 w-full rounded-lg border p-3"
+                className="mt-2 w-full rounded-lg border border-zinc-400 bg-white p-3 text-zinc-950 placeholder:text-zinc-600"
                 placeholder="3A, 3B, 4C..."
               />
             </div>
 
             <div>
-              <label className="text-sm font-medium text-zinc-900">
+              <label
+                htmlFor="porosity"
+                className="text-sm font-medium text-zinc-900"
+              >
                 Porosity
               </label>
 
               <input
+                id="porosity"
+                type="text"
                 value={porosity}
                 onChange={(event) =>
                   setPorosity(event.target.value)
                 }
-                className="mt-2 w-full rounded-lg border p-3"
+                className="mt-2 w-full rounded-lg border border-zinc-400 bg-white p-3 text-zinc-950 placeholder:text-zinc-600"
                 placeholder="Low, Medium, High"
               />
             </div>
@@ -218,12 +254,14 @@ export default function ClientProfileManager({
 
           <div className="mt-4 flex gap-2">
             <input
+              id="new-product"
+              type="text"
               value={newProduct}
               onChange={(event) =>
                 setNewProduct(event.target.value)
               }
               placeholder="Add product"
-              className="flex-1 rounded-lg border p-3"
+              className="min-w-0 flex-1 rounded-lg border border-zinc-400 bg-white p-3 text-zinc-950 placeholder:text-zinc-600"
             />
 
             <button
@@ -278,15 +316,16 @@ export default function ClientProfileManager({
         </h2>
 
         <textarea
+          id="client-notes"
           value={notes}
           onChange={(event) =>
             setNotes(event.target.value)
           }
-          className="mt-4 min-h-32 w-full rounded-lg border p-3"
+          className="mt-4 min-h-32 w-full rounded-lg border border-zinc-400 bg-white p-3 text-zinc-950 placeholder:text-zinc-600"
           placeholder="Add client notes..."
         />
 
-        <div className="mt-4 flex items-center gap-4">
+        <div className="mt-4 flex flex-wrap items-center gap-4">
           <button
             type="button"
             onClick={handleSaveClient}
