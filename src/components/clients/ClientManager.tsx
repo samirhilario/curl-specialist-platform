@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import AddClientForm from "@/components/clients/AddClientForm"
 import ClientList from "@/components/clients/ClientList"
 import type { Client } from "@/types/client"
@@ -15,6 +15,10 @@ export default function ClientManager({
   const [clients, setClients] = useState(initialClients)
   const [searchTerm, setSearchTerm] = useState("")
 
+  useEffect(() => {
+    setClients(initialClients)
+  }, [initialClients])
+
   function handleAddClient(client: Client) {
     setClients((currentClients) => [
       client,
@@ -27,12 +31,18 @@ export default function ClientManager({
   const filteredClients = clients.filter((client) => {
     const name = client.name.toLowerCase()
     const phone = client.phone?.toLowerCase() ?? ""
-    const curlType = client.curl_type?.toLowerCase() ?? ""
+    const curlType =
+      client.curl_type?.toLowerCase() ?? ""
+    const porosity =
+      client.porosity?.toLowerCase() ?? ""
+    const notes = client.notes?.toLowerCase() ?? ""
 
     return (
       name.includes(search) ||
       phone.includes(search) ||
-      curlType.includes(search)
+      curlType.includes(search) ||
+      porosity.includes(search) ||
+      notes.includes(search)
     )
   })
 
@@ -52,7 +62,7 @@ export default function ClientManager({
           id="client-search"
           type="search"
           className="mt-2 w-full rounded-lg border p-3"
-          placeholder="Search by name, phone, or curl type..."
+          placeholder="Search by name, phone, curl type, porosity, or notes..."
           value={searchTerm}
           onChange={(event) =>
             setSearchTerm(event.target.value)
